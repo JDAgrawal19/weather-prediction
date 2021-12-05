@@ -17,7 +17,7 @@ pipeline {
         stage('SC checkout') {
             steps {
                 echo 'checking out'
-                git changelog: false, poll: false, url: '', branch: 'main'
+                git changelog: false, poll: false, url: 'https://github.com/JDAgrawal19/weather-prediction.git', branch: 'main'
             }
         }
 
