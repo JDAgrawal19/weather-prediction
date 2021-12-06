@@ -26,6 +26,7 @@ public class WeatherResponse {
         private List<Weather> weather;
         private Clouds clouds;
         private Wind wind;
+        private Rain rain;
         private Integer visibility;
         private Integer pop;
         private Sys sys;
@@ -86,6 +87,13 @@ public class WeatherResponse {
         public static class Wind {
             private Integer speed;
             private Integer deg;
+        }
+
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class Rain {
+            private Integer last3hours;
         }
 
         @Data

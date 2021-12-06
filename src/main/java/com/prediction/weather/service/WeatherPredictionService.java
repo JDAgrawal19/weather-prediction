@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,20 +35,24 @@ public class WeatherPredictionService {
             Integer maxTemp = value.stream().max(Comparator.comparing(list -> list.getMain().getTempMax())).get().getMain().getTempMax();
             predictionOfDay.setMinTemp(minTemp);
             predictionOfDay.setMaxTemp(maxTemp);
-            predictionOfDay.setPrediction(getPredictionforDay(value,maxTemp));
+            predictionOfDay.setPrediction(getPredictionforDay(value,maxTemp, minTemp));
             predictionOfDayMap.put(key, predictionOfDay);
         });
         return predictionOfDayMap;
     }
 
-    private String getPredictionforDay(List<WeatherResponse.list> weatherList, Integer maxTemp){
+    private String getPredictionforDay(List<WeatherResponse.list> weatherList, Integer maxTemp, Integer minTemp){
         String sb = "";
         Integer windSpeed = weatherList.stream().max(Comparator.comparing(list -> list.getWind().getSpeed())).get().getWind().getSpeed();
+        Optional<Boolean> takeUmbrella = weatherList.stream().map(a->a.getWeather().stream().anyMatch(c->c.getDescription().contains("rain"))).findAny();
         if(maxTemp >= 273.15 + 40)
             sb+= "It will be hot outside, Wear Sunscreen";
-        else if(windSpeed > 40*.447)
+        else if(minTemp <= 277)
+            sb+= "Cold this time, wear warm clothes. ";
+        if(windSpeed > 40*.447)
             sb+= "It’s too windy, watch out!";
-
+        if(takeUmbrella.isPresent() && takeUmbrella.get())
+            sb+= "Possibility of Rain, Carry an Umbrella. ";
         return sb;
     }
 }
