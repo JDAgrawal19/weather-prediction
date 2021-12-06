@@ -17,7 +17,7 @@ pipeline {
         stage('SC checkout') {
             steps {
                 echo 'checking out'
-                git changelog: false, poll: false, url: 'https://github.com/JDAgrawal19/weather-prediction.git', branch: 'main'
+                git 'https://github.com/JDAgrawal19/weather-prediction.git'
             }
         }
 
@@ -35,11 +35,11 @@ pipeline {
         stage('Building our image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = docker.build(registry + ":$BUILD_NUMBER",'-f ./deploy/docker/Dockerfile .')
                 }
             }
         }
-        stage('Deploy our image') {
+        stage('Push our image') {
             steps {
                 script {
                     docker.withRegistry('', registryCredential) {
@@ -48,11 +48,18 @@ pipeline {
                 }
             }
         }
+
+        stage('Deployment') {
+            steps{
+                    sh "docker run -d -p 8080:8080 weather registry:$BUILD_NUMBER"
+            }
+        }
+
         stage('Cleaning up') {
             steps {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
-
     }
 }
+
