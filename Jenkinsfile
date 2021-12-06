@@ -12,7 +12,7 @@ pipeline {
         stage('SC checkout') {
             steps {
                 echo 'checking out'
-                git 'https://github.com/JDAgrawal19/weather-prediction.git'
+                 git  url: 'https://github.com/JDAgrawal19/weather-prediction.git', branch: 'main'
             }
         }
 
