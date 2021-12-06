@@ -44,7 +44,8 @@ pipeline {
 
         stage('Deployment') {
             steps{
-                    sh "docker run -d -p 8080:8080 weather registry:$BUILD_NUMBER"
+                    sh "docker rm weather --force"
+                    sh "docker run -d -p 8080:8080 --name=weather registry:$BUILD_NUMBER"
             }
         }
 
