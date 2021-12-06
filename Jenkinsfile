@@ -5,12 +5,7 @@ pipeline {
         dockerImage = ''
     }
 
-    agent any // { dockerfile true }
-
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "M3"
-    }
+    agent any
 
     stages {
 
@@ -25,9 +20,7 @@ pipeline {
                 {
                     steps {
                         echo 'h2'
-                        // withEnv( ["PATH+MAVEN=${tool 'M3'}/bin"] ) {
                         sh 'mvn clean package -Dmaven.test.skip'
-                        //}
                     }
                 }
 
